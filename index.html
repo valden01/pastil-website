@@ -608,31 +608,17 @@ function submitOrder(event) {
     message += `📝 Notes: ${notes}\n`;
     message += "\nThank you! 😊";
 
-    // Copy message to clipboard
-    navigator.clipboard.writeText(message).then(() => {
-        // Show in-page confirmation instead of alert
-        const confirmation = document.createElement("div");
-        confirmation.innerText = "✅ Order copied! Open Messenger and paste your order.";
-        confirmation.style.position = "fixed";
-        confirmation.style.top = "20px";
-        confirmation.style.left = "50%";
-        confirmation.style.transform = "translateX(-50%)";
-        confirmation.style.background = "#d62828";
-        confirmation.style.color = "white";
-        confirmation.style.padding = "12px 25px";
-        confirmation.style.borderRadius = "20px";
-        confirmation.style.zIndex = "2000";
-        document.body.appendChild(confirmation);
+    // Copy message
+    const tempBox = document.createElement("textarea");
+    tempBox.value = message;
+    document.body.appendChild(tempBox);
+    tempBox.select();
+    document.execCommand("copy");
+    document.body.removeChild(tempBox);
 
-        setTimeout(() => {
-            document.body.removeChild(confirmation);
-            // Open Messenger after small delay
-            window.open("https://m.me/cherilyn.clementedejuan", "_blank");
-        }, 500); // 0.5 second delay
-    }).catch(err => {
-        alert("Failed to copy order. Please try again.");
-        console.error(err);
-    });
+    alert("Order copied! Messenger will open — paste and send.");
+
+    window.open("https://web.facebook.com/messages/e2ee/t/6907072609393798", "_blank");
 
     // Clear cart
     cart = [];
