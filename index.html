@@ -570,7 +570,7 @@ window.addEventListener("scroll", () => {
 });
 
 // ===== ORDER FORM HANDLING =====
-    function submitOrder(event) {
+function submitOrder(event) {
     event.preventDefault();
 
     if (cart.length === 0) {
@@ -584,7 +584,6 @@ window.addEventListener("scroll", () => {
     const address = document.getElementById("customer-address").value || "N/A";
     const notes = document.getElementById("order-notes").value || "None";
 
-    // Build the order message
     let message = "🛒 CHICKEN PASTILAN ORDER\n";
     message += "────────────────────────────\n\n";
     message += `👤 Name: ${name}\n`;
@@ -609,30 +608,31 @@ window.addEventListener("scroll", () => {
     message += `📝 Notes: ${notes}\n`;
     message += "\nThank you! 😊";
 
-    // Encode message for WhatsApp URL
-    const whatsappNumber = "639703445717"; // Your number with country code
-    const encodedMessage = encodeURIComponent(message);
-    const whatsappURL = `https://wa.me/$639703445717?text=${encodedMessage}`;
+    // Copy message to clipboard
+    navigator.clipboard.writeText(message).then(() => {
+        // Show in-page confirmation instead of alert
+        const confirmation = document.createElement("div");
+        confirmation.innerText = "✅ Order copied! Open Messenger and paste your order.";
+        confirmation.style.position = "fixed";
+        confirmation.style.top = "20px";
+        confirmation.style.left = "50%";
+        confirmation.style.transform = "translateX(-50%)";
+        confirmation.style.background = "#d62828";
+        confirmation.style.color = "white";
+        confirmation.style.padding = "12px 25px";
+        confirmation.style.borderRadius = "20px";
+        confirmation.style.zIndex = "2000";
+        document.body.appendChild(confirmation);
 
-    // Show in-page confirmation
-    const confirmation = document.createElement("div");
-    confirmation.innerText = "✅ Order copied! WhatsApp will open with your order.";
-    confirmation.style.position = "fixed";
-    confirmation.style.top = "20px";
-    confirmation.style.left = "50%";
-    confirmation.style.transform = "translateX(-50%)";
-    confirmation.style.background = "#25D366"; // WhatsApp green
-    confirmation.style.color = "white";
-    confirmation.style.padding = "12px 25px";
-    confirmation.style.borderRadius = "20px";
-    confirmation.style.zIndex = "2000";
-    document.body.appendChild(confirmation);
-
-    setTimeout(() => {
-        document.body.removeChild(confirmation);
-        // Open WhatsApp with pre-filled message
-        window.open("https://wa.me/639703445717?text=" + encodeURIComponent(message), "_blank");
-    }, 500); // small delay
+        setTimeout(() => {
+            document.body.removeChild(confirmation);
+            // Open Messenger after small delay
+            window.open("https://m.me/cherilyn.clementedejuan", "_blank");
+        }, 500); // 0.5 second delay
+    }).catch(err => {
+        alert("Failed to copy order. Please try again.");
+        console.error(err);
+    });
 
     // Clear cart
     cart = [];
