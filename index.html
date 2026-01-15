@@ -570,7 +570,7 @@ window.addEventListener("scroll", () => {
 });
 
 // ===== ORDER FORM HANDLING =====
-function submitOrder(event) {
+    function submitOrder(event) {
     event.preventDefault();
 
     if (cart.length === 0) {
@@ -584,6 +584,7 @@ function submitOrder(event) {
     const address = document.getElementById("customer-address").value || "N/A";
     const notes = document.getElementById("order-notes").value || "None";
 
+    // Build the order message
     let message = "🛒 CHICKEN PASTILAN ORDER\n";
     message += "────────────────────────────\n\n";
     message += `👤 Name: ${name}\n`;
@@ -608,17 +609,30 @@ function submitOrder(event) {
     message += `📝 Notes: ${notes}\n`;
     message += "\nThank you! 😊";
 
-    // Copy message
-    const tempBox = document.createElement("textarea");
-    tempBox.value = message;
-    document.body.appendChild(tempBox);
-    tempBox.select();
-    document.execCommand("copy");
-    document.body.removeChild(tempBox);
+    // Encode message for WhatsApp URL
+    const whatsappNumber = "639703445717"; // Your number with country code
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappURL = `https://wa.me/$639703445717?text=${encodedMessage}`;
 
-    alert("Order copied! Messenger will open — paste and send.");
+    // Show in-page confirmation
+    const confirmation = document.createElement("div");
+    confirmation.innerText = "✅ Order copied! WhatsApp will open with your order.";
+    confirmation.style.position = "fixed";
+    confirmation.style.top = "20px";
+    confirmation.style.left = "50%";
+    confirmation.style.transform = "translateX(-50%)";
+    confirmation.style.background = "#25D366"; // WhatsApp green
+    confirmation.style.color = "white";
+    confirmation.style.padding = "12px 25px";
+    confirmation.style.borderRadius = "20px";
+    confirmation.style.zIndex = "2000";
+    document.body.appendChild(confirmation);
 
-    window.open("https://m.me/denise.dejuan.3", "_blank");
+    setTimeout(() => {
+        document.body.removeChild(confirmation);
+        // Open WhatsApp with pre-filled message
+        window.open(whatsappURL, "_blank");
+    }, 500); // small delay
 
     // Clear cart
     cart = [];
@@ -637,5 +651,4 @@ function toggleAddress() {
 }
 
 </script>
-
 
