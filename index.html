@@ -446,11 +446,64 @@ footer {
 <!-- ORDER -->
 <div id="order" class="page">
 <div class="order-box">
-    <div>
-        <h2>Craving Pastil?</h2>
-        <p>Message us and we’ll cook it fresh!</p>
-        <button onclick="orderNow()">Order Now</button>
+<div style="width:100%; max-width:700px;">
 
+<h2>Complete Your Order</h2>
+<p>Please fill in your details below.</p>
+
+<div style="background:white; color:black; padding:30px; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,0.2);">
+
+<h3>Your Order:</h3>
+<div id="order-cart-items" style="margin-bottom:20px; padding:10px; background:#fff6ea; border-radius:10px;"></div>
+<p><strong>Total: ₱<span id="order-cart-total">0</span></strong></p>
+
+<hr style="margin:20px 0;">
+
+<label>Name:</label><br>
+<input type="text" id="customer-name" placeholder="Your full name"
+style="width:100%; padding:10px; margin-bottom:10px;" required><br>
+
+<label>Phone:</label><br>
+<input type="text" id="customer-phone" placeholder="Your phone number"
+style="width:100%; padding:10px; margin-bottom:10px;" required><br>
+
+<label>Order Type:</label><br>
+<select id="order-type" style="width:100%; padding:10px; margin-bottom:10px;" onchange="toggleAddress()">
+    <option value="Pickup">Pickup</option>
+    <option value="Delivery">Delivery</option>
+</select><br>
+
+<div id="address-box" style="display:none;">
+<label>Delivery Address:</label><br>
+<textarea id="customer-address" placeholder="Complete address"
+style="width:100%; padding:10px; margin-bottom:10px;"></textarea>
+</div>
+
+<label>Notes (optional):</label><br>
+<textarea id="order-notes" placeholder="Special instructions"
+style="width:100%; padding:10px; margin-bottom:15px;"></textarea>
+
+<button onclick="submitOrder(event)"
+style="margin-top:10px; background:#d62828; color:white; border:none;
+padding:12px 25px; border-radius:20px; cursor:pointer;
+font-weight:bold; width:100%;">
+Submit Order
+</button>
+
+</div>
+
+<div style="margin-top:30px; text-align:center; color:white; font-size:1rem; line-height:2;">
+<p>📞 Phone: 0970-344-5717</p>
+<p>📧 Email:
+<a href="mailto:cherilynclementedejuan@gmail.com"
+style="color:#ffd700; text-decoration:underline;">
+cherilynclementedejuan@gmail.com</a>
+</p>
+</div>
+
+</div>
+</div>
+</div>
         <!-- CART ITEMS DISPLAY -->
         <div id="order-cart-items" style="margin-top:20px; text-align:left; background:rgba(255,255,255,0.1); padding:15px; border-radius:15px; max-height:300px; overflow-y:auto; color:white;"></div>
 
@@ -581,17 +634,34 @@ window.addEventListener("scroll", () => {
     }
 });
 
-function orderNow() {
+// ===== ORDER FORM HANDLING =====
+function submitOrder(event) {
+    event.preventDefault();
+
     if (cart.length === 0) {
         alert("Your cart is empty!");
         return;
     }
 
-    let message = "🛒 CHICKEN PASTILAN ORDER RECEIPT\n";
+    const name = document.getElementById("customer-name").value;
+    const phone = document.getElementById("customer-phone").value;
+    const orderType = document.getElementById("order-type").value;
+    const address = document.getElementById("customer-address").value || "N/A";
+    const notes = document.getElementById("order-notes").value || "None";
+
+    let message = "🛒 CHICKEN PASTILAN ORDER\n";
     message += "────────────────────────────\n\n";
+    message += `👤 Name: ${name}\n`;
+    message += `📞 Phone: ${phone}\n`;
+    message += `🚚 Order Type: ${orderType}\n`;
+
+    if (orderType === "Delivery") {
+        message += `📍 Address: ${address}\n`;
+    }
+
+    message += "\n🛍 ORDER ITEMS:\n";
 
     let total = 0;
-
     cart.forEach(item => {
         message += `• ${item.name} — ₱${item.price}\n`;
         total += item.price;
@@ -600,20 +670,36 @@ function orderNow() {
     message += "\n────────────────────────────\n";
     message += `🧾 TOTAL: ₱${total}\n`;
     message += "────────────────────────────\n\n";
-    message += "📍 For delivery/pickup\n";
-    message += "Thank you! 😊";
+    message += `📝 Notes: ${notes}\n`;
+    message += "\nThank you! 😊";
 
-    // COPY MESSAGE TO CLIPBOARD
-    navigator.clipboard.writeText(message).then(() => {
-        alert("Order receipt copied! Paste it in Messenger.");
+    // Copy message
+    const tempBox = document.createElement("textarea");
+    tempBox.value = message;
+    document.body.appendChild(tempBox);
+    tempBox.select();
+    document.execCommand("copy");
+    document.body.removeChild(tempBox);
 
-        // OPEN MESSENGER CHAT (no prefilled text — Facebook restriction)
-        window.open("https://m.me/denise.dejuan.3", "_blank");
-    });
+    alert("Order copied! Messenger will open — paste and send.");
+
+    window.open("https://m.me/denise.dejuan.3", "_blank");
+
+    // Clear cart
+    cart = [];
+    updateCartButton();
 }
-    
+
+function toggleAddress() {
+    const orderType = document.getElementById("order-type").value;
+    const addressBox = document.getElementById("address-box");
+
+    if (orderType === "Delivery") {
+        addressBox.style.display = "block";
+    } else {
+        addressBox.style.display = "none";
+    }
+}
+
 </script>
-
-
-
 
