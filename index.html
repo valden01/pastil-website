@@ -631,7 +631,7 @@ window.addEventListener("scroll", () => {
     setTimeout(() => {
         document.body.removeChild(confirmation);
         // Open WhatsApp with pre-filled message
-        window.open(whatsappURL, "_blank");
+        window.open("https://wa.me/639703445717?text=" + encodeURIComponent(message), "_blank");
     }, 500); // small delay
 
     // Clear cart
@@ -651,5 +651,4 @@ function toggleAddress() {
 }
 
 </script>
-
 
