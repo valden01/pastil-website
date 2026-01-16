@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chicken Pastilan</title>
+
+<!css part itu>
+<style>
+/* ===== RESET ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(180deg,#fff6ea,#fff);
+    color: #333;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+/* ===== PAGE SYSTEM ===== */
+.page {
+    display: none;
+    flex: 1 0 auto; /* Pushes footer to bottom */
+    animation: fade 0.6s ease;
+}
+
+.page.active {
+    display: block;
+}
+
+#home.active, #order.active {
+    display: flex;
+    flex-direction: column;
+}
+
+@keyframes fade {
+    from {opacity:0; transform: translateY(20px);}
+    to {opacity:1; transform: translateY(0);}
+}
+
+/* ===== FIXED LOGO & NAVBAR ===== */
+.fixed-logo {
+    position: fixed;
+    top: 18px;
+    left: 25px;
+    height: 55px;
+    cursor: pointer;
+    z-index: 1100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s, transform 0.3s;
+    filter: drop-shadow(0 10px 25px rgba(0,0,0,0.4));
+}
+
+.fixed-logo.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+nav {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(10px);
+    border-radius: 40px;
+    padding: 12px 25px;
+    display: flex;
+    gap: 25px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
+
+nav button {
+    background: none;
+    border: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    color: #444;
+    transition: 0.3s;
+}
+
+nav button:hover { color: #d62828; }
+
+/* ===== HERO & EXPLORE MENU BUTTON (RESTORED) ===== */
+.hero {
+    min-height: 100vh;
+    background: linear-gradient(rgba(214,40,40,.7),rgba(255,183,3,.7)),
+                url("https://images.unsplash.com/photo-1604908177522-402b92c0b7b7");
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 30px;
+    color: white;
+}
+
+.hero p {
+    margin: 0 0 35px;
+    font-size: 2rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+    position: relative;
+    top: -15px;
+    line-height: 1.3;
+}
+
+.hero button {
+    background: white;
+    color: #d62828;
+    border: none;
+    padding: 16px 40px;
+    border-radius: 40px;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    transition: 0.3s;
+}
+
+.hero button:hover {
+    transform: scale(1.05);
+}
+
+/* ===== BEST SELLERS & PRODUCTS (RESTORED) ===== */
+section {
+    max-width: 1200px;
+    margin: auto;
+    padding: 120px 20px;
+}
+
+h2 {
+    text-align: center;
+    font-size: 2.4rem;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #777;
+    margin-bottom: 60px;
+}
+
+.products {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(260px,1fr));
+    gap: 35px;
+}
+
+.product {
+    background: white;
+    border-radius: 25px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+    transition: 0.4s;
+    cursor: pointer;
+}
+
+.product:hover {
+    transform: translateY(-12px);
+}
+
+.product img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+}
+
+.product-info {
+    padding: 25px;
+}
+
+.product-info p {
+    line-height: 3;
+}
+
+.tag {
+    display: inline-block;
+    background: linear-gradient(135deg,#ffb703,#ff7b00);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+}
+
+.product-info .tag {
+    margin-bottom: 15px;
+}
+
+.price {
+    margin-top: 15px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #d62828;
+}
+
+/* ===== WHY US ===== */
+.why-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+    gap: 40px;
+    text-align: center;
+}
+
+.why-item {
+    background: white;
+    padding: 40px 25px;
+    border-radius: 25px;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+}
+
+.why-item h3 {
+    color: #d62828;
+}
+
+/* ===== ORDER BOX ===== */
+.order-box {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    background: linear-gradient(rgba(26, 25, 25, 0.6), rgba(51, 51, 51, 0.6)),
+                url('Untitled design.png') no-repeat center center;
+    background-size: cover;
+    /* Fixed the "circle" issue by changing attachment to scroll */
+    background-attachment: scroll; 
+    /* Added 100px padding-top to prevent overlap with the navbar */
+    padding: 100px 20px 60px 20px; 
+    box-sizing: border-box;
+    min-height: 100vh; /* Ensures the background covers the whole screen */
+}
+
+/* ===== FOOTER (FIXED) ===== */
+footer {
+    background: #1c1c1c;
+    color: #aaa;
+    text-align: center;
+    padding: 20px;
+    width: 100%;
+    flex-shrink: 0;
+    margin-top: auto; /* Pushes to bottom */
+}
+
+/* ===== LIGHTBOX ===== */
+#lightbox {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8);
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    cursor: pointer;
+}
+
+#lightbox img {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 15px;
+    box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+    transition: transform 0.3s ease;
+}
+
+/* ===== MOBILE RESPONSIVE ===== */
+@media screen and (max-width: 600px) {
+    nav { gap: 15px; padding: 10px 18px; }
+    .hero p { font-size: 1.5rem; }
+    #cart-button { bottom: 15px; right: 15px; }
+}
+</style>
+</head>
+
+<!html part itu>
+<body>
+
+<img src="pastil-removebg-preview.png"
+     alt="Chicken Pastilan Logo"
+     class="fixed-logo"
+     onclick="showPage('home')">
+
+<nav>
+    <button onclick="showPage('home')">Home</button>
+    <button onclick="showPage('menu')">Menu</button>
+    <button onclick="showPage('why')">Why Us</button>
+</nav>
+
+<!-- CART BUTTON -->
+<div id="cart-button" style="position:fixed; bottom:20px; right:20px; background:#d62828; color:white; padding:12px 20px; border-radius:50px; cursor:pointer; font-weight:bold; z-index:1200; box-shadow:0 5px 15px rgba(0,0,0,0.2);">
+    Cart (0)
+</div>
+
+<!-- CART POPUP -->
+<div id="cart-popup" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:white; padding:30px; border-radius:20px; box-shadow:0 20px 40px rgba(0,0,0,0.3); z-index:1300; max-width:400px; width:90%;">
+    <h2 style="text-align:center; margin-bottom:20px;">Your Cart</h2>
+    <div id="cart-items" style="margin-bottom:20px; max-height:300px; overflow-y:auto;"></div>
+    <div style="text-align:center; font-weight:bold; margin-bottom:15px;">Total: ₱<span id="cart-total">0</span></div>
+    <div style="display:flex; justify-content:space-around;">
+        <button onclick="closeCart()" style="background:#d62828; color:white; padding:12px 25px; border:none; border-radius:20px; cursor:pointer; font-weight:bold;">Close</button>
+        <button onclick="transferCartToOrder()" style="background:#ffd700; color:#d62828; padding:12px 25px; border:none; border-radius:20px; cursor:pointer; font-weight:bold;">Order Now</button>
+    </div>
+</div>
+
+<!-- HOME -->
+<div id="home" class="page active">
+    <div class="hero">
+        <div>
+            <img src="pastil-removebg-preview.png" alt="Chicken Pastilan Logo" class="logo">
+            <p>Comfort food made with heart & patience</p>
+            <button onclick="showPage('menu')">Explore Menu</button>
+        </div>
+    </div>
+</div>
+
+<!-- MENU -->
+<div id="menu" class="page">
+<section>
+<h2>Our Best Sellers</h2>
+<p class="subtitle">Slow-cooked • Flavor-packed • Sulit</p>
+
+<div class="products">
+    <div class="product">
+        <img src="pastilnochili.png">
+        <div class="product-info">
+            <span class="tag">Classic</span>
+            <h3>Pastil in Glass Jar</h3>
+            <p>Authentic homemade chicken pastil.</p>
+            <div class="price">₱80</div>
+            <button onclick="addToCart('Pastil in Glass Jar',80)" style="margin-top:10px; background:#d62828; color:white; border:none; padding:8px 16px; border-radius:15px; cursor:pointer;">Add to Cart</button>
+        </div>
+    </div>
+
+    <div class="product">
+        <img src="23f3e438-5c4c-4852-96f3-018fd9532f04.jpg">
+        <div class="product-info">
+            <span class="tag">Spicy 🌶</span>
+            <h3>Spicy Pastil Jar</h3>
+            <p>Extra kick for chili lovers.</p>
+            <div class="price">₱90</div>
+            <button onclick="addToCart('Spicy Pastil Jar',90)" style="margin-top:10px; background:#d62828; color:white; border:none; padding:8px 16px; border-radius:15px; cursor:pointer;">Add to Cart</button>
+        </div>
+    </div>
+
+    <div class="product">
+        <img src="patilwrice.png">
+        <div class="product-info">
+            <span class="tag">Best Seller</span>
+            <h3>Pastil with Rice</h3>
+            <p>Perfect everyday meal.</p>
+            <div class="price">₱40</div>
+            <button onclick="addToCart('Pastil with Rice',40)" style="margin-top:10px; background:#d62828; color:white; border:none; padding:8px 16px; border-radius:15px; cursor:pointer;">Add to Cart</button>
+        </div>
+    </div>
+</div>
+</section>
+</div>
+
+<!-- WHY -->
+<div id="why" class="page">
+<section>
+<h2>Why Chicken Pastilan?</h2>
+<p class="subtitle">More than just food</p>
+
+<div class="why-grid">
+    <div class="why-item">
+        <h3>🔥 Homemade</h3>
+        <p style="text-align: justify; margin-top: 15px;"> At Chicken Pastilan, we make our pastil with love, cleanliness, and patience. Every ingredient is carefully selected to ensure the freshest and most flavorful meals. 
+           Our kitchen is sanitized regularly, and all the utensils, containers, and surfaces we use are thoroughly cleaned to guarantee food safety. We take pride in every step of the cooking process — from slow-cooking the chicken to perfectly preparing the rice — so that each pastil we serve is made with care and dedication. 
+           Our goal is not just to feed, but to deliver a comforting, delicious experience in every bite.</p>
+    </div>
+    <div class="why-item">
+        <h3>🫙 Quality Jars</h3>
+        <p style="text-align: justify; margin-top: 15px;">Our jars are designed to be reusable, allowing you to repurpose them as containers for your personal use. 
+            Whether it’s for storing snacks, organizing small items, or keeping ingredients fresh, these eco-friendly jars help reduce waste and give you a practical, 
+            sustainable solution for everyday needs.</p>
+    </div>
+    <div class="why-item">
+        <h3>💰 Budget-Friendly</h3>
+        <p style="text-align: justify; margin-top: 15px;">We offer budget-friendly pastil because it’s not just about making a profit—it’s about making sure you enjoy a delicious and satisfying meal without spending a fortune. 
+           We believe that everyone deserves to taste quality, home-cooked food, so even at an affordable price, you get a hearty, flavorful meal that fills both your stomach and your heart.</p>
+    </div>
+</div>
+</section>
+</div>
+
+<!-- ORDER -->
+<div id="order" class="page">
+  <div class="order-box">
+    <!-- Wrapper to center content and stack vertically -->
+    <div style="width:100%; max-width:700px; display:flex; flex-direction:column; align-items:center;">
+
+      <h2>Complete Your Order</h2>
+      <p>Please fill in your details below.</p>
+
+      <!-- Order form box -->
+      <div style="background:white; color:black; padding:30px; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,0.2); width:100%;">
+        <h3>Your Order:</h3>
+        <div id="order-cart-items" style="margin-bottom:20px; padding:10px; background:#fff6ea; border-radius:10px;"></div>
+        <p><strong>Total: ₱<span id="order-cart-total">0</span></strong></p>
+
+        <hr style="margin:20px 0;">
+
+        <label>Name:</label><br>
+        <input type="text" id="customer-name" placeholder="Your full name" style="width:100%; padding:10px; margin-bottom:10px;" required><br>
+
+        <label>Phone:</label><br>
+        <input type="text" id="customer-phone" placeholder="Your phone number" style="width:100%; padding:10px; margin-bottom:10px;" required><br>
+
+        <label>Order Type:</label><br>
+        <select id="order-type" style="width:100%; padding:10px; margin-bottom:10px;" onchange="toggleAddress()">
+          <option value="Pickup">Pickup</option>
+          <option value="Delivery">Delivery</option>
+        </select><br>
+
+        <div id="address-box" style="display:none;">
+          <label>Delivery Address:</label><br>
+          <textarea id="customer-address" placeholder="Complete address" style="width:100%; padding:10px; margin-bottom:10px;"></textarea>
+        </div>
+
+        <label>Notes (optional):</label><br>
+        <textarea id="order-notes" placeholder="Special instructions" style="width:100%; padding:10px; margin-bottom:15px;"></textarea>
+
+        <button onclick="submitOrder(event)" style="margin-top:10px; background:#d62828; color:white; border:none; padding:12px 25px; border-radius:20px; cursor:pointer; font-weight:bold; width:100%;">
+          Submit Order
+        </button>
+      </div>
+
+      <!-- Contact info under the form -->
+      <div style="margin-top:30px; text-align:center; color:white; font-size:1rem; line-height:2;">
+        <p>📞 Phone: 0970-344-5717</p>
+      </div>
+    <!-- CART ITEMS DISPLAY -->
+        <div id="order-cart-items" style="margin-top:20px; text-align:left; background:rgba(255,255,255,0.1); padding:15px; border-radius:15px; max-height:300px; overflow-y:auto; color:white;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div id="lightbox" onclick="closeLightbox()">
+    <img id="lightbox-img" src="">
+</div>
+
+<footer>
+© 2025 Chicken Pastilan • Made with ❤️
+</footer>
+
+<!js part itu>
+<script>
+function showPage(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(page).classList.add('active');
+
+    const fixedLogo = document.querySelector('.fixed-logo');
+    page === 'home'
+        ? fixedLogo.classList.remove('show')
+        : fixedLogo.classList.add('show');
+}
+
+// LIGHTBOX FUNCTIONALITY
+document.querySelectorAll('.product img').forEach(img => {
+    img.addEventListener('click', () => {
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        lightboxImg.src = img.src;
+        lightbox.style.display = 'flex';
+    });
+});
+
+function closeLightbox() {
+    document.getElementById('lightbox').style.display = 'none';
+}
+
+// ===== CART SYSTEM =====
+let cart = [];
+
+function addToCart(name, price) {
+    cart.push({name, price});
+    updateCartButton();
+    alert(name + " added to cart!");
+}
+
+function updateCartButton() {
+    document.getElementById('cart-button').innerText = `Cart (${cart.length})`;
+}
+
+document.getElementById('cart-button').addEventListener('click', () => {
+    const cartItemsDiv = document.getElementById('cart-items');
+    cartItemsDiv.innerHTML = "";
+    let total = 0;
+    cart.forEach((item, index) => {
+        total += item.price;
+        cartItemsDiv.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+            <span>${item.name}</span> 
+            <span>₱${item.price}</span>
+            <button onclick="removeFromCart(${index})" style="background:none; border:none; color:#d62828; cursor:pointer;">❌</button>
+        </div>`;
+    });
+    document.getElementById('cart-total').innerText = total;
+    document.getElementById('cart-popup').style.display = 'block';
+});
+
+function closeCart() {
+    document.getElementById('cart-popup').style.display = 'none';
+}
+
+function removeFromCart(index) {
+    cart.splice(index,1);
+    updateCartButton();
+    // Refresh cart popup
+    document.getElementById('cart-button').click();
+}
+
+// ===== TRANSFER CART TO ORDER PAGE =====
+function transferCartToOrder() {
+    if(cart.length === 0){
+        alert("Your cart is empty!");
+        return;
+    }
+    showPage('order');
+
+    const orderItemsDiv = document.getElementById('order-cart-items');
+    orderItemsDiv.innerHTML = "";
+    let total = 0;
+    cart.forEach(item => {
+        total += item.price;
+        orderItemsDiv.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+            <span>${item.name}</span> 
+            <span>₱${item.price}</span>
+        </div>`;
+    });
+    document.getElementById('order-cart-total').innerText = total;
+
+    closeCart();
+}
+const cartBtn = document.getElementById("cart-button");
+const footer = document.querySelector("footer");
+
+window.addEventListener("scroll", () => {
+    const footerRect = footer.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+
+    if (footerRect.top <= windowHeight + 20) {
+        // Footer is visible → stop above footer
+        const overlap = windowHeight - footerRect.top + 20;
+        cartBtn.style.transform = `translateY(-${overlap}px)`;
+    } else {
+        // Normal floating position
+        cartBtn.style.transform = "translateY(0)";
+    }
+});
+
+// ===== ORDER FORM HANDLING =====
+function submitOrder(event) {
+    event.preventDefault();
+
+    if (cart.length === 0) {
+        alert("Your cart is empty!");
+        return;
+    }
+
+    const name = document.getElementById("customer-name").value;
+    const phone = document.getElementById("customer-phone").value;
+    const orderType = document.getElementById("order-type").value;
+    const address = document.getElementById("customer-address").value || "N/A";
+    const notes = document.getElementById("order-notes").value || "None";
+
+    let message = "🛒 CHICKEN PASTILAN ORDER\n";
+    message += "────────────────────────────\n\n";
+    message += `👤 Name: ${name}\n`;
+    message += `📞 Phone: ${phone}\n`;
+    message += `🚚 Order Type: ${orderType}\n`;
+
+    if (orderType === "Delivery") {
+        message += `📍 Address: ${address}\n`;
+    }
+
+    message += "\n🛍 ORDER ITEMS:\n";
+
+    let total = 0;
+    cart.forEach(item => {
+        message += `• ${item.name} — ₱${item.price}\n`;
+        total += item.price;
+    });
+
+    message += "\n────────────────────────────\n";
+    message += `🧾 TOTAL: ₱${total}\n`;
+    message += "────────────────────────────\n\n";
+    message += `📝 Notes: ${notes}\n`;
+    message += "\nThank you! 😊";
+
+    // Copy message
+    const tempBox = document.createElement("textarea");
+    tempBox.value = message;
+    document.body.appendChild(tempBox);
+    tempBox.select();
+    document.execCommand("copy");
+    document.body.removeChild(tempBox);
+
+    alert("Order copied! Messenger will open — paste and send.");
+
+    window.open("https://m.me/cherilyn.clementedejuan", "_blank");
+
+    // Clear cart
+    cart = [];
+    updateCartButton();
+}
+
+function toggleAddress() {
+    const orderType = document.getElementById("order-type").value;
+    const addressBox = document.getElementById("address-box");
+
+    if (orderType === "Delivery") {
+        addressBox.style.display = "block";
+    } else {
+        addressBox.style.display = "none";
+    }
+}
+
+</script>
+
